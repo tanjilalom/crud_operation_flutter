@@ -14,7 +14,7 @@ class UserListView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Users'),
+        title: const Text('CRUD Operation'),
         backgroundColor: Colors.blue,
         actions: [
           IconButton(

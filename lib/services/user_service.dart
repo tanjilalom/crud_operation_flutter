@@ -3,18 +3,8 @@ import '../models/user_model.dart';
 class UserService {
   // Simulating a database with a static list
   static final List<User> _users = [
-    User(
-      id: '1',
-      name: 'John Doe',
-      email: 'john@example.com',
-      phone: '+1234567890',
-    ),
-    User(
-      id: '2',
-      name: 'Jane Smith',
-      email: 'jane@example.com',
-      phone: '+0987654321',
-    ),
+
+
   ];
 
   // Get all users
