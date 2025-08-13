@@ -1,7 +1,7 @@
+import 'package:crud_operation_flutter/models/user_model.dart';
+import 'package:crud_operation_flutter/services/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../models/user_model.dart';
-import '../services/user_service.dart';
 
 class UserController extends GetxController {
   final UserService _userService = UserService();

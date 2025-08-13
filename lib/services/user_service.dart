@@ -1,11 +1,8 @@
-import '../models/user_model.dart';
+import 'package:crud_operation_flutter/models/user_model.dart';
 
 class UserService {
   // Simulating a database with a static list
-  static final List<User> _users = [
-
-
-  ];
+  static final List<User> _users = [];
 
   // Get all users
   Future<List<User>> getAllUsers() async {

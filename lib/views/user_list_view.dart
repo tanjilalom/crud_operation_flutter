@@ -1,8 +1,7 @@
+import 'package:crud_operation_flutter/controllers/user_controller.dart';
+import 'package:crud_operation_flutter/models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-import '../controllers/user_controller.dart';
-import '../models/user_model.dart';
 import 'add_edit_user_view.dart';
 
 class UserListView extends StatelessWidget {

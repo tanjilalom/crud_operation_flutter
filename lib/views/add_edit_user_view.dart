@@ -1,7 +1,7 @@
+import 'package:crud_operation_flutter/controllers/user_controller.dart';
+import 'package:crud_operation_flutter/models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../controllers/user_controller.dart';
-import '../models/user_model.dart';
 import 'user_list_view.dart';
 
 class AddEditUserView extends StatelessWidget {
@@ -41,7 +41,7 @@ class AddEditUserView extends StatelessWidget {
                 controller: _nameController,
                 decoration: InputDecoration(
                   labelText: 'Name',
-                  prefixIcon: Icon(Icons.person),
+                  prefixIcon: const Icon(Icons.person),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -56,12 +56,12 @@ class AddEditUserView extends StatelessWidget {
                   return null;
                 },
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               TextFormField(
                 controller: _emailController,
                 decoration: InputDecoration(
                   labelText: 'Email',
-                  prefixIcon: Icon(Icons.email),
+                  prefixIcon: const Icon(Icons.email),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -77,12 +77,12 @@ class AddEditUserView extends StatelessWidget {
                   return null;
                 },
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               TextFormField(
                 controller: _phoneController,
                 decoration: InputDecoration(
                   labelText: 'Phone',
-                  prefixIcon: Icon(Icons.phone),
+                  prefixIcon: const Icon(Icons.phone),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -98,7 +98,7 @@ class AddEditUserView extends StatelessWidget {
                   return null;
                 },
               ),
-              SizedBox(height: 32),
+              const SizedBox(height: 32),
               Obx(() => SizedBox(
                     width: double.infinity,
                     height: 50,
@@ -112,10 +112,10 @@ class AddEditUserView extends StatelessWidget {
                         ),
                       ),
                       child: userController.isLoading.value
-                          ? CircularProgressIndicator(color: Colors.white)
+                          ? const CircularProgressIndicator(color: Colors.white)
                           : Text(
                               isEditing ? 'Update User' : 'Add User',
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white,
