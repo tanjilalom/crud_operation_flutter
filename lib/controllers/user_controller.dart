@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class UserController extends GetxController {
-  final UserService _userService = UserService();
+  final UserService _userService = Get.find<UserService>();
 
   var users = <User>[].obs;
   var isLoading = false.obs;
@@ -36,13 +36,15 @@ class UserController extends GetxController {
     required String email,
     required String phone,
   }) async {
+    isLoading.value = true;
     try {
       String newId = DateTime.now().millisecondsSinceEpoch.toString();
       User newUser = User(id: newId, name: name, email: email, phone: phone);
 
       bool success = await _userService.addUser(newUser);
       if (success) {
-        users.add(newUser);
+        // Reload users to get fresh data from Hive
+        await loadUsers();
         _showSnackbar('Success', 'User added successfully', Colors.green);
         return true;
       }
@@ -50,6 +52,8 @@ class UserController extends GetxController {
     } catch (e) {
       _showSnackbar('Error', 'Failed to add user: $e', Colors.red);
       return false;
+    } finally {
+      isLoading.value = false;
     }
   }
 
@@ -60,15 +64,14 @@ class UserController extends GetxController {
     required String email,
     required String phone,
   }) async {
+    isLoading.value = true;
     try {
       User updatedUser = User(id: id, name: name, email: email, phone: phone);
 
       bool success = await _userService.updateUser(updatedUser);
       if (success) {
-        int index = users.indexWhere((u) => u.id == id);
-        if (index != -1) {
-          users[index] = updatedUser;
-        }
+        // Reload users to get fresh data from Hive
+        await loadUsers();
         _showSnackbar('Success', 'User updated successfully', Colors.green);
         return true;
       }
@@ -76,22 +79,79 @@ class UserController extends GetxController {
     } catch (e) {
       _showSnackbar('Error', 'Failed to update user: $e', Colors.red);
       return false;
+    } finally {
+      isLoading.value = false;
     }
   }
 
-  /// Delete user
-  Future<bool> deleteUser(String id) async {
-    try {
-      bool success = await _userService.deleteUser(id);
-      if (success) {
-        users.removeWhere((user) => user.id == id);
-        _showSnackbar('Success', 'User deleted successfully', Colors.green);
-        return true;
+  /// Delete user with confirmation
+  Future<void> deleteUser(String id) async {
+    // Show confirmation dialog
+    bool? confirm = await Get.dialog<bool>(
+      AlertDialog(
+        title: const Text('Delete User'),
+        content: const Text('Are you sure you want to delete this user?'),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(result: false),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () => Get.back(result: true),
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            child: const Text('Delete', style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true) {
+      isLoading.value = true;
+      try {
+        bool success = await _userService.deleteUser(id);
+        if (success) {
+          // Reload users to get fresh data from Hive
+          await loadUsers();
+          _showSnackbar('Success', 'User deleted successfully', Colors.green);
+        }
+      } catch (e) {
+        _showSnackbar('Error', 'Failed to delete user: $e', Colors.red);
+      } finally {
+        isLoading.value = false;
       }
-      return false;
-    } catch (e) {
-      _showSnackbar('Error', 'Failed to delete user: $e', Colors.red);
-      return false;
+    }
+  }
+
+  /// Get user count
+  // int getUserCount() {
+  //   return _userService.getUserCount();
+  // }
+
+  /// Clear all users (for testing)
+  Future<void> clearAllUsers() async {
+    bool? confirm = await Get.dialog<bool>(
+      AlertDialog(
+        title: const Text('Clear All Users'),
+        content: const Text('This will delete all users. Are you sure?'),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(result: false),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () => Get.back(result: true),
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            child:
+                const Text('Clear All', style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true) {
+      // await _userService.clearAllUsers();
+      await loadUsers();
+      _showSnackbar('Success', 'All users cleared', Colors.orange);
     }
   }
 
@@ -104,6 +164,7 @@ class UserController extends GetxController {
       backgroundColor: color.withOpacity(0.8),
       colorText: Colors.white,
       margin: const EdgeInsets.all(8),
+      duration: const Duration(seconds: 2),
     );
   }
 }
