@@ -1,48 +1,81 @@
 import 'package:crud_operation_flutter/models/user_model.dart';
+import 'package:hive/hive.dart';
 
 class UserService {
-  // Simulating a database with a static list
-  static final List<User> _users = [];
+  static const String _boxName = 'users';
+
+  // Get the Hive box
+  Box<User> get _box => Hive.box<User>(_boxName);
+
+  // Initialize Hive box
+  Future<void> init() async {
+    if (!Hive.isBoxOpen(_boxName)) {
+      await Hive.openBox<User>(_boxName);
+    }
+  }
 
   // Get all users
   Future<List<User>> getAllUsers() async {
-    // Simulate network delay
-    await Future.delayed(const Duration(milliseconds: 500));
-    return List.from(_users);
+    await Future.delayed(const Duration(milliseconds: 100));
+    return _box.values.toList();
   }
 
   // Add new user
   Future<bool> addUser(User user) async {
-    await Future.delayed(const Duration(milliseconds: 300));
-    _users.add(user);
-    return true;
+    try {
+      await _box.put(user.id, user);
+      return true;
+    } catch (e) {
+      print('Error adding user: $e');
+      return false;
+    }
   }
 
   // Update existing user
   Future<bool> updateUser(User user) async {
-    await Future.delayed(const Duration(milliseconds: 300));
-    int index = _users.indexWhere((u) => u.id == user.id);
-    if (index != -1) {
-      _users[index] = user;
-      return true;
+    try {
+      if (_box.containsKey(user.id)) {
+        await _box.put(user.id, user);
+        return true;
+      }
+      return false;
+    } catch (e) {
+      print('Error updating user: $e');
+      return false;
     }
-    return false;
   }
 
   // Delete user
   Future<bool> deleteUser(String id) async {
-    await Future.delayed(const Duration(milliseconds: 300));
-    _users.removeWhere((user) => user.id == id);
-    return true;
-  }
-
-  // Get user by ID
-  Future<User?> getUserById(String id) async {
-    await Future.delayed(const Duration(milliseconds: 200));
     try {
-      return _users.firstWhere((user) => user.id == id);
+      if (_box.containsKey(id)) {
+        await _box.delete(id);
+        return true;
+      }
+      return false;
     } catch (e) {
-      return null;
+      print('Error deleting user: $e');
+      return false;
     }
   }
+
+  // // Get user by ID
+  // Future<User?> getUserById(String id) async {
+  //   try {
+  //     return _box.get(id);
+  //   } catch (e) {
+  //     print('Error getting user by ID: $e');
+  //     return null;
+  //   }
+  // }
+  //
+  // // Get total user count
+  // int getUserCount() {
+  //   return _box.length;
+  // }
+  //
+  // // Clear all users (useful for testing)
+  // Future<void> clearAllUsers() async {
+  //   await _box.clear();
+  // }
 }
