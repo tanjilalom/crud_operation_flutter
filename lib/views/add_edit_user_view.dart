@@ -99,30 +99,32 @@ class AddEditUserView extends StatelessWidget {
                 },
               ),
               const SizedBox(height: 32),
-              Obx(() => SizedBox(
-                    width: double.infinity,
-                    height: 50,
-                    child: ElevatedButton(
-                      onPressed:
-                          userController.isLoading.value ? null : _saveUser,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
+              Obx(
+                () => SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: ElevatedButton(
+                    onPressed:
+                        userController.isLoading.value ? null : _saveUser,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                      child: userController.isLoading.value
-                          ? const CircularProgressIndicator(color: Colors.white)
-                          : Text(
-                              isEditing ? 'Update User' : 'Add User',
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                            ),
                     ),
-                  )),
+                    child: userController.isLoading.value
+                        ? const CircularProgressIndicator(color: Colors.white)
+                        : Text(
+                            isEditing ? 'Update User' : 'Add User',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -150,7 +152,6 @@ class AddEditUserView extends StatelessWidget {
       }
 
       if (success) {
-        // Go to main page (replace all previous pages)
         Get.offAll(() => UserListView());
       }
     }
